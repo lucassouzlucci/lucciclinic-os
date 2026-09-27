@@ -1,0 +1,1082 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lucci Clinic OS - Sistema Médico & PEP Inteligente</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              50: '#ecfdf5',
+              500: '#10b981',
+              600: '#059669',
+              700: '#047857',
+            },
+            dark: {
+              base: '#090d16',
+              surface: '#0f172a',
+              card: '#131d33',
+              border: '#1e293b',
+              muted: '#64748b',
+              accent: '#06b6d4',
+              gold: '#f59e0b',
+              danger: '#f43f5e'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <!-- Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap');
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      background-color: #090d16;
+      color: #f1f5f9;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+      background: #0f172a;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+      background: #1e293b;
+      border-radius: 3px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #334155;
+    }
+    .badge-glow {
+      box-shadow: 0 0 15px rgba(6, 182, 212, 0.35);
+    }
+  </style>
+</head>
+<body class="min-h-screen flex bg-dark-base text-slate-100 overflow-x-hidden">
+
+  <!-- SIDEBAR LATERAL -->
+  <aside class="w-64 border-r border-dark-border bg-dark-surface/90 backdrop-blur-md flex flex-col justify-between shrink-0 sticky top-0 h-screen z-30">
+    <div>
+      <!-- LOGO & BRAND -->
+      <div class="p-6 border-b border-dark-border flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 via-dark-accent to-emerald-400 flex items-center justify-center shadow-lg shadow-emerald-500/20">
+            <i data-lucide="activity" class="w-6 h-6 text-white"></i>
+          </div>
+          <div>
+            <h1 class="font-extrabold text-lg tracking-tight text-white flex items-center gap-1.5">
+              LUCCI <span class="text-dark-accent font-semibold text-xs px-1.5 py-0.5 rounded bg-dark-accent/10 border border-dark-accent/20">OS</span>
+            </h1>
+            <p class="text-[10px] text-slate-400 uppercase tracking-widest font-medium">Clínica & PEP IA</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- DOCTOR BADGE -->
+      <div class="px-4 py-3 mx-3 my-4 rounded-xl bg-dark-card/60 border border-dark-border flex items-center gap-3">
+        <div class="w-9 h-9 rounded-full bg-gradient-to-br from-amber-500/20 to-brand-500/20 border border-brand-500/30 flex items-center justify-center font-bold text-brand-500 text-xs shrink-0">
+          LL
+        </div>
+        <div class="overflow-hidden">
+          <div class="text-xs font-semibold text-white truncate" id="side-doc-name">Dr. Lucas Lucci</div>
+          <div class="text-[10px] text-brand-500 font-mono tracking-wider" id="side-doc-crm">CRM-SC 28419</div>
+        </div>
+      </div>
+
+      <!-- MENU NAVIGATION -->
+      <nav class="px-3 space-y-1 text-sm font-medium">
+        <button onclick="navigateTo('dashboard')" id="nav-dashboard" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="layout-dashboard" class="w-4 h-4"></i>
+          <span>Dashboard</span>
+        </button>
+
+        <button onclick="navigateTo('pacientes')" id="nav-pacientes" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="users" class="w-4 h-4"></i>
+          <span>Pacientes</span>
+          <span class="ml-auto text-[10px] bg-dark-border px-1.5 py-0.5 rounded-full text-slate-400" id="badge-patient-count">4</span>
+        </button>
+
+        <button onclick="navigateTo('pep')" id="nav-pep" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="stethoscope" class="w-4 h-4 text-dark-accent"></i>
+          <span class="text-dark-accent font-semibold">PEP Inteligente</span>
+          <span class="ml-auto text-[9px] bg-dark-accent/20 text-dark-accent border border-dark-accent/30 px-1.5 py-0.5 rounded font-bold">IA</span>
+        </button>
+
+        <button onclick="navigateTo('agenda')" id="nav-agenda" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="calendar" class="w-4 h-4"></i>
+          <span>Agenda & Consultas</span>
+        </button>
+
+        <button onclick="navigateTo('financeiro')" id="nav-financeiro" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="dollar-sign" class="w-4 h-4 text-emerald-400"></i>
+          <span>Financeiro</span>
+        </button>
+
+        <button onclick="navigateTo('produtos')" id="nav-produtos" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="sparkles" class="w-4 h-4 text-amber-400"></i>
+          <span>Produtos & Funis</span>
+        </button>
+
+        <button onclick="navigateTo('configuracoes')" id="nav-configuracoes" class="nav-item w-full flex items-center gap-3 px-3.5 py-2.5 rounded-lg text-slate-300 hover:text-white hover:bg-dark-card transition-all">
+          <i data-lucide="settings" class="w-4 h-4"></i>
+          <span>Perfil Médico</span>
+        </button>
+      </nav>
+    </div>
+
+    <!-- FOOTER DA SIDEBAR -->
+    <div class="p-4 border-t border-dark-border text-xs text-slate-500">
+      <div class="flex items-center justify-between">
+        <span class="flex items-center gap-1.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          Sistema Online
+        </span>
+        <span class="font-mono text-[10px] text-slate-400">v2.7 - FASE 7</span>
+      </div>
+      <p class="text-[10px] text-slate-600 mt-1">Balneário Camboriú, SC</p>
+    </div>
+  </aside>
+
+  <!-- CONTEÚDO PRINCIPAL -->
+  <main class="flex-1 min-h-screen overflow-y-auto custom-scrollbar p-8">
+
+    <!-- TOAST NOTIFICATION CONTAINER -->
+    <div id="toast" class="fixed top-6 right-6 z-50 transform transition-all duration-300 translate-y-[-150%] opacity-0 pointer-events-none">
+      <div class="bg-dark-card border border-dark-border shadow-2xl rounded-xl p-4 flex items-center gap-3 min-w-[320px]" id="toast-box">
+        <div id="toast-icon" class="text-brand-500"></div>
+        <div>
+          <h4 id="toast-title" class="text-xs font-bold text-white">Notificação</h4>
+          <p id="toast-msg" class="text-xs text-slate-400 mt-0.5">Mensagem do sistema</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: DASHBOARD -->
+    <!-- ================================================================= -->
+    <section id="view-dashboard" class="space-y-8">
+      <!-- HEADER -->
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <div class="flex items-center gap-2 text-xs font-semibold text-brand-500 uppercase tracking-wider mb-1">
+            <i data-lucide="shield-check" class="w-3.5 h-3.5"></i>
+            Painel Executivo Médico
+          </div>
+          <h2 class="text-2xl font-bold tracking-tight text-white">Bem-vindo, Dr. Lucas Lucci</h2>
+          <p class="text-sm text-slate-400">Visão consolidada da Lucci Clinic, atendimentos do dia e performance clínica.</p>
+        </div>
+        <div class="flex items-center gap-3">
+          <button onclick="openNewPatientModal()" class="px-4 py-2 bg-dark-card hover:bg-dark-border border border-dark-border text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-all">
+            <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Novo Paciente
+          </button>
+          <button onclick="openNewAppointmentModal()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all">
+            <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Nova Consulta
+          </button>
+        </div>
+      </div>
+
+      <!-- KPIS CARDS -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="p-5 rounded-2xl bg-dark-card/80 border border-dark-border flex flex-col justify-between hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Pacientes Ativos</span>
+            <div class="w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center">
+              <i data-lucide="users" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-white" id="kpi-total-patients">4</div>
+            <div class="text-xs text-emerald-400 mt-1 flex items-center gap-1">
+              <i data-lucide="trending-up" class="w-3 h-3"></i> 100% monitorados
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-dark-card/80 border border-dark-border flex flex-col justify-between hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Consultas Hoje</span>
+            <div class="w-8 h-8 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center">
+              <i data-lucide="calendar" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-white" id="kpi-today-appointments">3</div>
+            <div class="text-xs text-cyan-400 mt-1 flex items-center gap-1">
+              <i data-lucide="clock" class="w-3 h-3"></i> 1 paciente na recepção
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-dark-card/80 border border-dark-border flex flex-col justify-between hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Receita do Mês</span>
+            <div class="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+              <i data-lucide="dollar-sign" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-white" id="kpi-income">R$ 7.000,00</div>
+            <div class="text-xs text-amber-400 mt-1 flex items-center gap-1">
+              <i data-lucide="check-circle" class="w-3 h-3"></i> Consultas + Kiwify
+            </div>
+          </div>
+        </div>
+
+        <div class="p-5 rounded-2xl bg-dark-card/80 border border-dark-border flex flex-col justify-between hover:border-slate-700 transition-all">
+          <div class="flex items-center justify-between text-slate-400 text-xs font-medium">
+            <span>Atenção Clínica / Risco</span>
+            <div class="w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 flex items-center justify-center">
+              <i data-lucide="alert-triangle" class="w-4 h-4"></i>
+            </div>
+          </div>
+          <div class="mt-4">
+            <div class="text-3xl font-extrabold text-rose-400" id="kpi-risk">1</div>
+            <div class="text-xs text-slate-400 mt-1">Check-in de esteatose pendente</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- TABELAS DO DASHBOARD: AGENDAMENTOS E ATIVIDADE -->
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <!-- AGENDAMENTOS DO DIA -->
+        <div class="lg:col-span-2 p-6 rounded-2xl bg-dark-surface border border-dark-border">
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <h3 class="font-bold text-white text-base">Atendimentos Agendados para Hoje</h3>
+              <p class="text-xs text-slate-400">Dr. Lucas Lucci • Balneário Camboriú</p>
+            </div>
+            <button onclick="navigateTo('agenda')" class="text-xs text-dark-accent hover:underline flex items-center gap-1">
+              Ver agenda completa <i data-lucide="arrow-right" class="w-3 h-3"></i>
+            </button>
+          </div>
+
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs">
+              <thead class="text-slate-400 border-b border-dark-border uppercase text-[10px]">
+                <tr>
+                  <th class="pb-3">Horário</th>
+                  <th class="pb-3">Paciente</th>
+                  <th class="pb-3">Tipo</th>
+                  <th class="pb-3">Status</th>
+                  <th class="pb-3 text-right">Ação</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-dark-border/60" id="dashboard-appointments-list">
+                <!-- Injetado dinamicamente -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- RESUMO EXECUTIVO & PRODUTOS DIGITAIS -->
+        <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border flex flex-col justify-between space-y-6">
+          <div>
+            <h3 class="font-bold text-white text-base mb-1">Ecossistema Lucci Clinic</h3>
+            <p class="text-xs text-slate-400 mb-4">Produtos, Protocolos & Funis Ativos</p>
+            
+            <div class="space-y-3">
+              <div class="p-3 rounded-xl bg-dark-card/50 border border-dark-border flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-semibold text-white">Plano Metabólico Inicial (PMI)</div>
+                  <div class="text-[10px] text-slate-400">Protocolo Clínico Presencial</div>
+                </div>
+                <span class="text-xs font-bold text-emerald-400">18 Ativos</span>
+              </div>
+
+              <div class="p-3 rounded-xl bg-dark-card/50 border border-dark-border flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-semibold text-white">Tirzepatida na Prática (Kiwify)</div>
+                  <div class="text-[10px] text-slate-400">Ebook & Hub Digital</div>
+                </div>
+                <span class="text-xs font-bold text-dark-accent">84 Vendas</span>
+              </div>
+
+              <div class="p-3 rounded-xl bg-dark-card/50 border border-dark-border flex items-center justify-between">
+                <div>
+                  <div class="text-xs font-semibold text-white">Peptide Protocol (BPC-157)</div>
+                  <div class="text-[10px] text-slate-400">Otimização Celular</div>
+                </div>
+                <span class="text-xs font-bold text-amber-400">9 Ativos</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-xl bg-gradient-to-br from-dark-accent/10 to-brand-500/10 border border-dark-accent/20">
+            <div class="flex items-center gap-2 text-xs font-bold text-dark-accent mb-1">
+              <i data-lucide="brain" class="w-4 h-4"></i> Copiloto de IA Ativo
+            </div>
+            <p class="text-[11px] text-slate-300">
+              O Claude Sonnet & Gemini auxiliam na triagem de exames com visão computacional e rascunhos SOAP estruturados.
+            </p>
+            <button onclick="navigateTo('pep')" class="mt-3 w-full py-2 bg-dark-accent/20 hover:bg-dark-accent/30 text-dark-accent text-xs font-semibold rounded-lg border border-dark-accent/30 transition-all flex items-center justify-center gap-2">
+              Iniciar Atendimento com IA
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: PACIENTES (LISTA & BUSCA) -->
+    <!-- ================================================================= -->
+    <section id="view-pacientes" class="space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-white">Gestão de Pacientes</h2>
+          <p class="text-sm text-slate-400">Prontuários eletrônicos, perfis metabólicos e protocolos em andamento.</p>
+        </div>
+        <button onclick="openNewPatientModal()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all">
+          <i data-lucide="user-plus" class="w-3.5 h-3.5"></i> Cadastrar Paciente
+        </button>
+      </div>
+
+      <!-- BARRA DE PESQUISA E FILTROS -->
+      <div class="p-4 rounded-xl bg-dark-surface border border-dark-border flex flex-col sm:flex-row gap-4 justify-between items-center">
+        <div class="relative w-full sm:w-96">
+          <i data-lucide="search" class="w-4 h-4 text-slate-400 absolute left-3 top-3"></i>
+          <input type="text" id="patient-search-input" oninput="filterPatients()" placeholder="Buscar por nome, CPF ou telefone..." class="w-full bg-dark-card border border-dark-border rounded-lg pl-9 pr-4 py-2 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-brand-500">
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <button onclick="filterByStatus('')" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-border text-white">Todos</button>
+          <button onclick="filterByStatus('em_tratamento')" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card text-slate-400 hover:text-white">Em Tratamento</button>
+          <button onclick="filterByStatus('ativo')" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card text-slate-400 hover:text-white">Ativos</button>
+          <button onclick="filterByStatus('em_risco')" class="status-filter-btn px-3 py-1.5 rounded-lg text-xs font-medium bg-dark-card text-slate-400 hover:text-white">Em Risco</button>
+        </div>
+      </div>
+
+      <!-- CARDS DE PACIENTES -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-4" id="patients-grid">
+        <!-- Injetado dinamicamente -->
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: PEP INTELIGENTE (PRONTUÁRIO ELETRÔNICO DO PACIENTE SPA) -->
+    <!-- ================================================================= -->
+    <section id="view-pep" class="space-y-6 hidden">
+      <!-- HEADER DO PACIENTE NO PEP -->
+      <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border">
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+          <div class="flex items-center gap-4">
+            <div class="w-16 h-16 rounded-2xl bg-gradient-to-tr from-brand-600 to-dark-accent flex items-center justify-center font-extrabold text-2xl text-white shadow-xl shadow-emerald-500/10 shrink-0" id="pep-avatar">
+              RS
+            </div>
+            <div>
+              <div class="flex items-center gap-3">
+                <h2 class="text-xl font-bold text-white" id="pep-patient-name">Rodrigo Santoro Alencar</h2>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-400 border border-emerald-500/30" id="pep-patient-status">Em Tratamento</span>
+              </div>
+              <div class="flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-slate-400 mt-1">
+                <span>CPF: <strong class="text-slate-300 font-mono" id="pep-patient-cpf">084.219.542-88</strong></span>
+                <span>Idade: <strong class="text-slate-300" id="pep-patient-age">38 anos</strong></span>
+                <span>Contato: <strong class="text-slate-300" id="pep-patient-phone">(47) 99123-4567</strong></span>
+                <span>Alergias: <strong class="text-rose-400" id="pep-patient-allergies">Dipirona</strong></span>
+              </div>
+            </div>
+          </div>
+
+          <!-- SELETOR RÁPIDO DE PACIENTE -->
+          <div class="flex items-center gap-3">
+            <div class="text-right hidden lg:block">
+              <div class="text-[10px] text-slate-400 uppercase font-semibold">Trocar Prontuário</div>
+              <select id="pep-patient-select" onchange="loadPatientInPep(this.value)" class="mt-1 bg-dark-card border border-dark-border rounded-lg px-3 py-1.5 text-xs text-white focus:outline-none focus:border-brand-500">
+                <!-- Injetado dinamicamente -->
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- DADOS METABÓLICOS VITIAS -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-dark-border/60">
+          <div class="p-3 rounded-xl bg-dark-card/60 border border-dark-border">
+            <span class="text-[10px] text-slate-400 uppercase font-medium">Peso Corporal</span>
+            <div class="text-lg font-bold text-white mt-0.5" id="pep-metric-weight">94.5 kg</div>
+          </div>
+          <div class="p-3 rounded-xl bg-dark-card/60 border border-dark-border">
+            <span class="text-[10px] text-slate-400 uppercase font-medium">Altura / IMC</span>
+            <div class="text-lg font-bold text-white mt-0.5" id="pep-metric-bmi">181 cm (28.8)</div>
+          </div>
+          <div class="p-3 rounded-xl bg-dark-card/60 border border-dark-border">
+            <span class="text-[10px] text-slate-400 uppercase font-medium">Gordura Corporal</span>
+            <div class="text-lg font-bold text-white mt-0.5" id="pep-metric-fat">26.4 %</div>
+          </div>
+          <div class="p-3 rounded-xl bg-dark-card/60 border border-dark-border">
+            <span class="text-[10px] text-slate-400 uppercase font-medium">Protocolo Ativo</span>
+            <div class="text-xs font-bold text-dark-accent truncate mt-1" id="pep-metric-protocol">Tirzepatida 2.5mg</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- PAINEL CENTRAL DO COPILOTO IA -->
+      <div class="p-6 rounded-2xl bg-gradient-to-br from-dark-surface to-dark-card border border-dark-accent/30 relative overflow-hidden shadow-2xl">
+        <div class="absolute -right-16 -top-16 w-64 h-64 bg-dark-accent/5 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div class="flex items-center gap-3">
+            <div class="w-9 h-9 rounded-xl bg-dark-accent/10 border border-dark-accent/30 text-dark-accent flex items-center justify-center">
+              <i data-lucide="brain-circuit" class="w-5 h-5"></i>
+            </div>
+            <div>
+              <h3 class="font-bold text-white text-base flex items-center gap-2">
+                Copiloto Clínico de Inteligência Artificial
+                <span class="text-[10px] px-2 py-0.5 rounded bg-dark-accent/20 text-dark-accent border border-dark-accent/30 font-mono">Claude Sonnet & Gemini</span>
+              </h3>
+              <p class="text-xs text-slate-400">Raciocínio clínico automatizado em modo draft para validação médica do Dr. Lucas Lucci.</p>
+            </div>
+          </div>
+
+          <div id="copilot-action-container">
+            <button onclick="runAiCopilotAnalysis()" id="btn-run-ai" class="px-5 py-2.5 bg-gradient-to-r from-dark-accent to-brand-600 hover:from-cyan-400 hover:to-emerald-500 text-slate-950 font-bold text-xs rounded-xl shadow-lg shadow-cyan-500/20 flex items-center gap-2 transition-all">
+              <i data-lucide="sparkles" class="w-4 h-4"></i> Analisar Paciente com IA
+            </button>
+          </div>
+        </div>
+
+        <!-- MÁQUINA DE ESTADOS DO COPILOTO -->
+        <div id="copilot-state-box" class="mt-4">
+          <!-- ESTADO IDLE -->
+          <div id="copilot-state-idle" class="p-4 rounded-xl bg-dark-base/50 border border-dark-border text-xs text-slate-400 flex items-center justify-between">
+            <span>Clique em <strong>"Analisar Paciente com IA"</strong> para cruzar histórico metabólico, exames e sintomas com formulação automática do modelo SOAP e prescrição sugerida.</span>
+            <span class="text-[11px] text-dark-accent font-semibold flex items-center gap-1 shrink-0 ml-2">
+              <i data-lucide="lock" class="w-3.5 h-3.5"></i> Médico é o decisor final
+            </span>
+          </div>
+
+          <!-- ESTADO LOADING / AGENTIC WORKFLOW -->
+          <div id="copilot-state-loading" class="hidden p-5 rounded-xl bg-dark-base/80 border border-dark-accent/40 space-y-3">
+            <div class="flex items-center gap-3 text-dark-accent text-sm font-semibold">
+              <div class="w-5 h-5 border-2 border-dark-accent border-t-transparent rounded-full animate-spin"></div>
+              <span>Processando raciocínio clínico agentico...</span>
+            </div>
+            <div class="space-y-2 text-xs text-slate-300 font-mono pt-2" id="copilot-steps-list">
+              <!-- Steps injetados -->
+            </div>
+          </div>
+
+          <!-- ESTADO RESULT (DRAFT PRONTO PARA REVISÃO) -->
+          <div id="copilot-state-result" class="hidden p-5 rounded-xl bg-dark-base/90 border border-emerald-500/40 space-y-4">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2 text-emerald-400 text-xs font-bold uppercase tracking-wider">
+                <i data-lucide="check-circle" class="w-4 h-4"></i> Rascunho Clínico Gerado com Sucesso (Modo Draft)
+              </div>
+              <div class="flex items-center gap-2">
+                <button onclick="toggleEditDraft(true)" class="px-3 py-1.5 bg-dark-card hover:bg-dark-border border border-dark-border text-white text-xs font-semibold rounded-lg flex items-center gap-1.5">
+                  <i data-lucide="edit-3" class="w-3.5 h-3.5"></i> Editar Rascunho
+                </button>
+                <button onclick="approveCurrentDraft()" class="px-4 py-1.5 bg-brand-600 hover:bg-brand-500 text-white text-xs font-bold rounded-lg shadow-lg shadow-emerald-600/20 flex items-center gap-1.5">
+                  <i data-lucide="check" class="w-3.5 h-3.5"></i> Aprovar & Salvar no Prontuário
+                </button>
+              </div>
+            </div>
+
+            <!-- VISUALIZAÇÃO DO MODELO SOAP -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs" id="draft-soap-view">
+              <div class="p-3.5 rounded-lg bg-dark-surface border border-dark-border">
+                <div class="text-[10px] font-bold text-dark-accent uppercase tracking-wider mb-1">Subjetivo (S)</div>
+                <p class="text-slate-300" id="draft-view-s"></p>
+              </div>
+              <div class="p-3.5 rounded-lg bg-dark-surface border border-dark-border">
+                <div class="text-[10px] font-bold text-dark-accent uppercase tracking-wider mb-1">Objetivo (O)</div>
+                <p class="text-slate-300" id="draft-view-o"></p>
+              </div>
+              <div class="p-3.5 rounded-lg bg-dark-surface border border-dark-border">
+                <div class="text-[10px] font-bold text-dark-accent uppercase tracking-wider mb-1">Avaliação (A)</div>
+                <p class="text-slate-300" id="draft-view-a"></p>
+              </div>
+              <div class="p-3.5 rounded-lg bg-dark-surface border border-dark-border">
+                <div class="text-[10px] font-bold text-dark-accent uppercase tracking-wider mb-1">Plano Terapêutico (P)</div>
+                <p class="text-slate-300 whitespace-pre-line" id="draft-view-p"></p>
+              </div>
+            </div>
+
+            <!-- MODO EDIÇÃO DO DRAFT -->
+            <div id="draft-soap-edit" class="hidden space-y-3 text-xs">
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Subjetivo (S)</label>
+                  <textarea id="edit-soap-s" rows="3" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Objetivo (O)</label>
+                  <textarea id="edit-soap-o" rows="3" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Avaliação (A)</label>
+                  <textarea id="edit-soap-a" rows="3" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+                <div>
+                  <label class="block text-[10px] font-bold text-slate-400 uppercase mb-1">Plano Terapêutico (P)</label>
+                  <textarea id="edit-soap-p" rows="3" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white focus:outline-none focus:border-brand-500"></textarea>
+                </div>
+              </div>
+              <div class="flex justify-end gap-2 pt-2">
+                <button onclick="toggleEditDraft(false)" class="px-3 py-1.5 bg-dark-card border border-dark-border text-slate-300 text-xs rounded-lg">Cancelar</button>
+                <button onclick="saveDraftEdits()" class="px-4 py-1.5 bg-dark-accent text-slate-950 font-bold text-xs rounded-lg">Salvar Alterações</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABAS DO PEP -->
+      <div class="border-b border-dark-border flex space-x-6 text-sm font-semibold">
+        <button onclick="switchPepTab('historico')" id="pep-tab-btn-historico" class="pep-tab-btn pb-3 text-brand-500 border-b-2 border-brand-500 flex items-center gap-2">
+          <i data-lucide="history" class="w-4 h-4"></i> Histórico Clínico
+        </button>
+        <button onclick="switchPepTab('exames')" id="pep-tab-btn-exames" class="pep-tab-btn pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2">
+          <i data-lucide="microscope" class="w-4 h-4"></i> Exames & Visão Computacional
+        </button>
+        <button onclick="switchPepTab('prescricoes')" id="pep-tab-btn-prescricoes" class="pep-tab-btn pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2">
+          <i data-lucide="pill" class="w-4 h-4"></i> Prescrições & Receituário
+        </button>
+        <button onclick="switchPepTab('planos')" id="pep-tab-btn-planos" class="pep-tab-btn pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2">
+          <i data-lucide="utensils" class="w-4 h-4"></i> Plano de Cuidado & Dieta
+        </button>
+        <button onclick="switchPepTab('assinar')" id="pep-tab-btn-assinar" class="pep-tab-btn pb-3 text-slate-400 hover:text-slate-200 border-b-2 border-transparent flex items-center gap-2">
+          <i data-lucide="file-check" class="w-4 h-4 text-dark-accent"></i> 
+          <span class="text-dark-accent">Assinar & Enviar (VIDAS SC)</span>
+        </button>
+      </div>
+
+      <!-- ABA 1: HISTÓRICO CLÍNICO -->
+      <div id="pep-tab-historico" class="pep-tab-content space-y-4">
+        <div class="flex items-center justify-between">
+          <h3 class="font-bold text-white text-base">Evoluções Médicas e Anamneses</h3>
+          <span class="text-xs text-slate-400" id="anamneses-count">1 registro</span>
+        </div>
+        <div class="space-y-4" id="pep-anamneses-list">
+          <!-- Injetado dinamicamente -->
+        </div>
+      </div>
+
+      <!-- ABA 2: EXAMES & VISÃO COMPUTACIONAL (FASES 5 e 6) -->
+      <div id="pep-tab-exames" class="pep-tab-content space-y-6 hidden">
+        <!-- DEMONSTRADOR INTERATIVO DE SEGURANÇA CLÍNICA -->
+        <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border">
+          <div class="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-4">
+            <div>
+              <div class="flex items-center gap-2 text-xs font-bold text-dark-accent uppercase tracking-wider mb-1">
+                <i data-lucide="scan" class="w-4 h-4"></i> Módulo de Visão Computacional Médica
+              </div>
+              <h3 class="font-bold text-white text-base">Leitor e Analisador de Laudos Laboratoriais</h3>
+              <p class="text-xs text-slate-400">A IA lê o PDF/Imagem, extrai biomarcadores e executa checagem de segurança clínica de titularidade.</p>
+            </div>
+            <!-- BOTOES DE TESTE DE SEGURANÇA -->
+            <div class="flex flex-wrap items-center gap-2">
+              <button onclick="triggerExamVision(false)" class="px-4 py-2 bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition-all">
+                <i data-lucide="file-check-2" class="w-4 h-4"></i> Testar Exame Válido
+              </button>
+              <button onclick="triggerExamVision(true)" class="px-4 py-2 bg-rose-600/90 hover:bg-rose-500 text-white font-semibold text-xs rounded-xl flex items-center gap-2 transition-all">
+                <i data-lucide="shield-alert" class="w-4 h-4"></i> Simular Exame de Terceiro (Alerta)
+              </button>
+            </div>
+          </div>
+
+          <!-- RESULTADO DA VISÃO COMPUTACIONAL -->
+          <div id="vision-result-container" class="mt-4 hidden">
+            <!-- ALERTA DE SEGURANÇA (VERMELHO) -->
+            <div id="vision-security-alert" class="hidden p-4 rounded-xl bg-rose-500/10 border border-rose-500/40 text-rose-300 text-xs space-y-2">
+              <div class="flex items-center gap-2 font-bold text-rose-400 text-sm">
+                <i data-lucide="octagon-alert" class="w-5 h-5"></i>
+                BLOQUEIO DE SEGURANÇA CLÍNICA ATIVADO!
+              </div>
+              <p id="vision-security-text"></p>
+            </div>
+
+            <!-- RESULTADO SUCESSO (VERDE / TABELA DE BIOMARCADORES) -->
+            <div id="vision-success-box" class="hidden space-y-4">
+              <div class="p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center justify-between">
+                <span class="flex items-center gap-2 font-semibold">
+                  <i data-lucide="badge-check" class="w-4 h-4 text-emerald-400"></i>
+                  Titularidade confirmada com sucesso: <strong class="text-white" id="vision-verified-name"></strong>
+                </span>
+                <span class="text-[10px] text-emerald-400/80 font-mono">LAB SANTA LUZIA - BALNEÁRIO CAMBORIÚ</span>
+              </div>
+
+              <!-- TABELA DE BIOMARCADORES EXTRAÍDOS -->
+              <div class="overflow-x-auto rounded-xl border border-dark-border">
+                <table class="w-full text-left text-xs">
+                  <thead class="bg-dark-card text-slate-400 uppercase text-[10px]">
+                    <tr>
+                      <th class="p-3">Biomarcador</th>
+                      <th class="p-3">Valor Encontrado</th>
+                      <th class="p-3">Referência Ótima</th>
+                      <th class="p-3">Status</th>
+                    </tr>
+                  </thead>
+                  <tbody class="divide-y divide-dark-border/60 bg-dark-surface" id="biomarkers-table-body">
+                    <!-- Injetado dinamicamente -->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LISTA DE EXAMES ARQUIVADOS -->
+        <div class="space-y-3">
+          <h4 class="font-bold text-white text-sm">Arquivos e Laudos no Prontuário</h4>
+          <div class="space-y-2" id="exams-history-list">
+            <!-- Injetado dinamicamente -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 3: PRESCRIÇÕES -->
+      <div id="pep-tab-prescricoes" class="pep-tab-content space-y-6 hidden">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-bold text-white text-base">Receituários e Terapêutica Ativa</h3>
+            <p class="text-xs text-slate-400">Medicamentos, dosagens e orientações de uso.</p>
+          </div>
+          <button onclick="switchPepTab('assinar')" class="px-4 py-2 bg-dark-accent hover:bg-cyan-400 text-slate-950 font-bold text-xs rounded-xl flex items-center gap-2 transition-all">
+            <i data-lucide="printer" class="w-3.5 h-3.5"></i> Emitir Receita VIDAS SC
+          </button>
+        </div>
+
+        <div class="space-y-4" id="prescriptions-list">
+          <!-- Injetado dinamicamente -->
+        </div>
+      </div>
+
+      <!-- ABA 4: PLANOS DE CUIDADO -->
+      <div id="pep-tab-planos" class="pep-tab-content space-y-6 hidden">
+        <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border space-y-6">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] text-brand-500 uppercase font-bold tracking-wider">Protocolo Metabólico</span>
+              <h3 class="text-lg font-bold text-white mt-0.5" id="careplan-protocol-name">Plano Metabólico Inicial (PMI)</h3>
+            </div>
+            <span class="px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">Em Execução</span>
+          </div>
+
+          <!-- MACRONUTRIENTES -->
+          <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div class="p-4 rounded-xl bg-dark-card border border-dark-border text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Meta Calórica</span>
+              <div class="text-xl font-extrabold text-white mt-1" id="careplan-calories">2.100 kcal</div>
+            </div>
+            <div class="p-4 rounded-xl bg-dark-card border border-dark-border text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Proteínas</span>
+              <div class="text-xl font-extrabold text-dark-accent mt-1" id="careplan-protein">190 g</div>
+            </div>
+            <div class="p-4 rounded-xl bg-dark-card border border-dark-border text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Carboidratos</span>
+              <div class="text-xl font-extrabold text-amber-400 mt-1" id="careplan-carbs">160 g</div>
+            </div>
+            <div class="p-4 rounded-xl bg-dark-card border border-dark-border text-center">
+              <span class="text-[10px] text-slate-400 uppercase font-semibold">Gorduras</span>
+              <div class="text-xl font-extrabold text-emerald-400 mt-1" id="careplan-fats">65 g</div>
+            </div>
+          </div>
+
+          <div class="space-y-4 pt-4 border-t border-dark-border/60">
+            <div>
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <i data-lucide="pill" class="w-3.5 h-3.5 text-brand-500"></i> Suplementação Orientada
+              </h4>
+              <p class="text-xs text-slate-300 p-3 rounded-xl bg-dark-card/60 border border-dark-border" id="careplan-supplements">
+                Whey Isolate 30g pós-treino, Creatina Monohidratada 5g/dia, Magnésio Dimalato 400mg à noite, Zinco Quelato 25mg.
+              </p>
+            </div>
+            <div>
+              <h4 class="text-xs font-bold text-white uppercase tracking-wider mb-1 flex items-center gap-1.5">
+                <i data-lucide="dumbbell" class="w-3.5 h-3.5 text-brand-500"></i> Treinamento Físico Orientado
+              </h4>
+              <p class="text-xs text-slate-300 p-3 rounded-xl bg-dark-card/60 border border-dark-border" id="careplan-workout">
+                Musculação ABC (Empurrar / Puxar / Pernas) 4 vezes por semana com foco em manutenção de massa magra + 30 minutos de cardio em zona 2.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ABA 5: ASSINAR E ENVIAR (FASE 7 - VIDAS SC) -->
+      <div id="pep-tab-assinar" class="pep-tab-content space-y-6 hidden">
+        <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div class="flex items-center gap-2 text-xs font-bold text-dark-accent uppercase tracking-wider mb-1">
+              <i data-lucide="award" class="w-4 h-4"></i> Padrão Oficial VIDAS Santa Catarina
+            </div>
+            <h3 class="font-bold text-white text-lg">Emissão de Receita Digital com Assinatura ICP-Brasil</h3>
+            <p class="text-xs text-slate-400">Emissão validada para farmácias com verificação por QR Code e disparo em 1 clique para WhatsApp.</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="generateOfficialVidasRecipe()" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all">
+              <i data-lucide="pen-tool" class="w-4 h-4"></i> Assinar Digitalmente Agora
+            </button>
+          </div>
+        </div>
+
+        <!-- DOCUMENTO VISUAL DA RECEITA VIDAS SC -->
+        <div class="max-w-2xl mx-auto bg-slate-900 text-slate-100 p-8 rounded-2xl border-2 border-dark-border shadow-2xl relative" id="vidas-recipe-preview">
+          <!-- CABEÇALHO VIDAS SC -->
+          <div class="border-b-2 border-dark-accent/40 pb-5 mb-6 flex items-start justify-between">
+            <div>
+              <div class="flex items-center gap-2 text-xs font-black tracking-widest text-dark-accent uppercase">
+                <i data-lucide="shield" class="w-4 h-4 text-emerald-400"></i> VIDAS SANTA CATARINA • PEP DIGITAL
+              </div>
+              <h2 class="text-xl font-extrabold text-white mt-1" id="recipe-doc-name">Dr. Lucas Lucci</h2>
+              <p class="text-xs text-slate-400 font-mono" id="recipe-doc-crm">CRM-SC 28419 • RQE 19284</p>
+              <p class="text-[11px] text-slate-400" id="recipe-doc-clinic">Lucci Clinic • Balneário Camboriú, SC</p>
+            </div>
+            <div class="text-right">
+              <span class="text-[10px] font-mono bg-dark-card border border-dark-border px-2 py-1 rounded text-dark-accent font-bold" id="recipe-code">
+                VIDAS-SC-482910
+              </span>
+              <div class="text-[10px] text-slate-400 mt-2 font-mono" id="recipe-date">Emissão: 28/09/2026</div>
+            </div>
+          </div>
+
+          <!-- DADOS DO PACIENTE -->
+          <div class="bg-dark-card/60 p-3.5 rounded-xl border border-dark-border text-xs mb-6">
+            <div class="text-[10px] text-slate-400 uppercase font-semibold">Paciente</div>
+            <div class="font-bold text-white text-sm" id="recipe-patient-name">Rodrigo Santoro Alencar</div>
+            <div class="text-[11px] text-slate-400 font-mono mt-0.5">CPF: <span id="recipe-patient-cpf">084.219.542-88</span> • Balneário Camboriú, SC</div>
+          </div>
+
+          <!-- CORPO DA PRESCRIÇÃO -->
+          <div class="space-y-4 mb-8" id="recipe-items-container">
+            <div class="p-4 rounded-xl bg-dark-card/40 border border-dark-border">
+              <div class="font-bold text-sm text-emerald-400">1. Tirzepatida (Solução Injetável 2.5mg/0.5mL)</div>
+              <div class="text-xs text-slate-300 mt-1">Uso Subcutâneo. Aplicar 0,5 mL no abdômen 1 vez por semana à noite.</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Duração: 4 semanas (fase de indução metabólica).</div>
+            </div>
+            <div class="p-4 rounded-xl bg-dark-card/40 border border-dark-border">
+              <div class="font-bold text-sm text-emerald-400">2. Cloridrato de Ondansetrona 4mg</div>
+              <div class="text-xs text-slate-300 mt-1">Uso Oral. Dissolver 1 comprimido sublingual se houver náuseas nas 24h após aplicação.</div>
+              <div class="text-[11px] text-slate-400 mt-0.5">Duração: Uso pontual sob demanda.</div>
+            </div>
+          </div>
+
+          <!-- RODAPÉ COM ASSINATURA DIGITAL E QR CODE -->
+          <div class="border-t-2 border-dark-border/80 pt-6 flex flex-col sm:flex-row items-center justify-between gap-6">
+            <div class="flex items-center gap-4">
+              <div class="w-16 h-16 bg-white p-1 rounded-lg shrink-0 flex items-center justify-center">
+                <!-- QR Code SVG -->
+                <svg viewBox="0 0 100 100" width="60" height="60" xmlns="http://www.w3.org/2000/svg"><rect width="100" height="100" fill="#ffffff"/><path d="M10 10h30v30H10zM15 15v20h20V15zM20 20h10v10H20zM60 10h30v30H60zM65 15v20h20V15zM70 20h10v10H70zM10 60h30v30H10zM15 65v20h20V65zM20 70h10v10H20zM50 20h5v15h-5zM60 60h10v10H60zM75 60h15v5H75zM50 65h10v25H50zM65 80h10v10H65zM80 75h10v15H80z" fill="#0f172a"/></svg>
+              </div>
+              <div>
+                <div class="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                  <i data-lucide="check-circle" class="w-3.5 h-3.5"></i> Assinado Digitalmente (ICP-Brasil)
+                </div>
+                <div class="text-[10px] text-slate-400 font-mono mt-0.5" id="recipe-hash">SHA256:dGhpc19pc19hX3ByZXZpZXdfc2lnbmF0dXJl</div>
+                <div class="text-[10px] text-slate-400">Validação online em: valida.vidas.sc.gov.br</div>
+              </div>
+            </div>
+
+            <!-- BOTÃO DISPARO WHATSAPP -->
+            <a id="btn-send-whatsapp" href="#" target="_blank" class="px-5 py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center gap-2 shadow-lg shadow-emerald-600/30 transition-all shrink-0">
+              <i data-lucide="message-circle" class="w-4 h-4"></i> Enviar no WhatsApp
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: AGENDA & CONSULTAS -->
+    <!-- ================================================================= -->
+    <section id="view-agenda" class="space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-white">Agenda Médica & Atendimentos</h2>
+          <p class="text-sm text-slate-400">Consultas, retornos metabólicos e aplicações de peptídeos.</p>
+        </div>
+        <button onclick="openNewAppointmentModal()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg shadow-lg shadow-emerald-600/20 flex items-center gap-2 transition-all">
+          <i data-lucide="calendar-plus" class="w-3.5 h-3.5"></i> Agendar Atendimento
+        </button>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border">
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-slate-400 border-b border-dark-border uppercase text-[10px]">
+              <tr>
+                <th class="pb-3">Data</th>
+                <th class="pb-3">Horário</th>
+                <th class="pb-3">Paciente</th>
+                <th class="pb-3">Tipo de Consulta</th>
+                <th class="pb-3">Status</th>
+                <th class="pb-3">Notas</th>
+                <th class="pb-3 text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-border/60" id="agenda-table-body">
+              <!-- Injetado dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: FINANCEIRO -->
+    <!-- ================================================================= -->
+    <section id="view-financeiro" class="space-y-6 hidden">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div>
+          <h2 class="text-2xl font-bold tracking-tight text-white">Gestão Financeira</h2>
+          <p class="text-sm text-slate-400">Fluxo de caixa de consultas, procedimentos e vendas do Hub Digital (Kiwify).</p>
+        </div>
+        <button onclick="openNewFinanceModal()" class="px-4 py-2 bg-brand-600 hover:bg-brand-500 text-white text-xs font-semibold rounded-lg flex items-center gap-2 transition-all">
+          <i data-lucide="plus" class="w-3.5 h-3.5"></i> Novo Lançamento
+        </button>
+      </div>
+
+      <!-- CARDS FINANCEIROS -->
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="p-5 rounded-2xl bg-dark-card border border-dark-border">
+          <span class="text-xs text-slate-400 font-medium">Total de Entradas</span>
+          <div class="text-2xl font-extrabold text-emerald-400 mt-2" id="fin-income">R$ 7.000,00</div>
+          <span class="text-[11px] text-slate-400 mt-1 block">Consultas presenciais + Infoprodutos</span>
+        </div>
+        <div class="p-5 rounded-2xl bg-dark-card border border-dark-border">
+          <span class="text-xs text-slate-400 font-medium">Total de Despesas</span>
+          <div class="text-2xl font-extrabold text-rose-400 mt-2" id="fin-expense">R$ 1.250,00</div>
+          <span class="text-[11px] text-slate-400 mt-1 block">Custos operacionais e insumos</span>
+        </div>
+        <div class="p-5 rounded-2xl bg-dark-card border border-dark-border">
+          <span class="text-xs text-slate-400 font-medium">Saldo Líquido</span>
+          <div class="text-2xl font-extrabold text-amber-400 mt-2" id="fin-net">R$ 5.750,00</div>
+          <span class="text-[11px] text-emerald-400 mt-1 block font-semibold">+ 82% margem líquida</span>
+        </div>
+      </div>
+
+      <!-- TABELA DE TRANSAÇÕES -->
+      <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border">
+        <h3 class="font-bold text-white text-base mb-4">Extrato de Movimentações</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-slate-400 border-b border-dark-border uppercase text-[10px]">
+              <tr>
+                <th class="pb-3">Data</th>
+                <th class="pb-3">Descrição</th>
+                <th class="pb-3">Categoria</th>
+                <th class="pb-3">Forma de Pagamento</th>
+                <th class="pb-3">Valor</th>
+                <th class="pb-3 text-right">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-border/60" id="finance-table-body">
+              <!-- Injetado dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: PRODUTOS & FUNIS -->
+    <!-- ================================================================= -->
+    <section id="view-produtos" class="space-y-6 hidden">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-white">Produtos, Ebooks & Funis</h2>
+        <p class="text-sm text-slate-400">Ecossistema digital da Lucci Clinic integrando autoridade médica, Kiwify e captação.</p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="products-grid">
+        <!-- Injetado dinamicamente -->
+      </div>
+
+      <!-- TABELA DE LEADS CAPTADOS NOS FUNIS -->
+      <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border">
+        <h3 class="font-bold text-white text-base mb-4">Leads Captados no Hub e Ebooks</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead class="text-slate-400 border-b border-dark-border uppercase text-[10px]">
+              <tr>
+                <th class="pb-3">Nome</th>
+                <th class="pb-3">WhatsApp</th>
+                <th class="pb-3">Origem do Funil</th>
+                <th class="pb-3">Interesse</th>
+                <th class="pb-3">Status</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-dark-border/60" id="leads-table-body">
+              <!-- Injetado dinamicamente -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================================================================= -->
+    <!-- VIEW: PERFIL MÉDICO & CONFIGURAÇÕES -->
+    <!-- ================================================================= -->
+    <section id="view-configuracoes" class="space-y-6 hidden">
+      <div>
+        <h2 class="text-2xl font-bold tracking-tight text-white">Configurações & Perfil Médico</h2>
+        <p class="text-sm text-slate-400">Dados cadastrais do Dr. Lucas Lucci para emissão de receituários e assinatura digital VIDAS SC.</p>
+      </div>
+
+      <div class="p-6 rounded-2xl bg-dark-surface border border-dark-border max-w-2xl">
+        <form id="doctor-form" onsubmit="saveDoctorSettings(event)" class="space-y-4 text-xs">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Nome Completo</label>
+              <input type="text" id="doc-input-name" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">CRM / UF</label>
+              <input type="text" id="doc-input-crm" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">RQE</label>
+              <input type="text" id="doc-input-rqe" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Email Profissional</label>
+              <input type="email" id="doc-input-email" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-slate-400 font-semibold mb-1">Nome da Clínica</label>
+              <input type="text" id="doc-input-clinic" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div class="sm:col-span-2">
+              <label class="block text-slate-400 font-semibold mb-1">Endereço da Clínica (Balneário Camboriú, SC)</label>
+              <input type="text" id="doc-input-address" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Telefone / WhatsApp da Clínica</label>
+              <input type="text" id="doc-input-phone" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white">
+            </div>
+            <div>
+              <label class="block text-slate-400 font-semibold mb-1">Token de Assinatura Digital ICP-Brasil</label>
+              <input type="text" id="doc-input-token" class="w-full bg-dark-card border border-dark-border rounded-lg p-2.5 text-white font-mono text-[11px]">
+            </div>
+          </div>
+
+          <div class="pt-4 border-t border-dark-border/60 flex justify-end">
+            <button type="submit" class="px-5 py-2.5 bg-brand-600 hover:bg-brand-500 text-white font-bold text-xs rounded-xl shadow-lg shadow-emerald-600/20 transition-all">
+              Salvar Alterações
+            </button>
+          </div>
+        </form>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: NOVO PACIENTE -->
+  <!-- ================================================================= -->
+  <div id="modal-patient" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-surface border border-dark-border rounded-2xl w-full max-w-xl p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-dark-border">
+        <h3 class="font-bold text-white text-base">Cadastrar Novo Paciente</h3>
+        <button onclick="closeModal('modal-patient')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="form-new-patient" onsubmit="submitNewPatient(event)" class="space-y-3 text-xs">
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Nome Completo</label>
+            <input type="text" required id="np-name" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">CPF</label>
+            <input type="text" required id="np-cpf" placeholder="000.000.000-00" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Data de Nascimento</label>
+            <input type="date" required id="np-birth" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">WhatsApp</label>
+            <input type="text" required id="np-phone" placeholder="(47) 99999-9999" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Peso (kg)</label>
+            <input type="number" step="0.1" required id="np-weight" placeholder="80" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Altura (cm)</label>
+            <input type="number" required id="np-height" placeholder="175" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-slate-400 font-medium mb-1">Protocolo Sugerido / Interesse</label>
+            <select id="np-protocol" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+              <option value="Tirzepatida 2.5mg + Plano Metabólico Inicial">Tirzepatida + Plano Metabólico Inicial (Emagrecimento)</option>
+              <option value="Otimização Hormonal na Prática">Otimização Hormonal na Prática</option>
+              <option value="Peptide Protocol (BPC-157 / Longevidade)">Peptide Protocol (BPC-157 / Longevidade)</option>
+              <option value="Plano Metabólico Inicial">Plano Metabólico Inicial</option>
+            </select>
+          </div>
+          <div class="sm:col-span-2">
+            <label class="block text-slate-400 font-medium mb-1">Queixa Principal / Objetivos</label>
+            <textarea id="np-complaint" rows="2" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white" placeholder="Ex: Ganho ponderal progressivo, letargia vespertina..."></textarea>
+          </div>
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-dark-border">
+          <button type="button" onclick="closeModal('modal-patient')" class="px-4 py-2 bg-dark-card border border-dark-border text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-lg">Cadastrar Paciente</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODAL: NOVA CONSULTA / AGENDAMENTO -->
+  <!-- ================================================================= -->
+  <div id="modal-appointment" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4 hidden">
+    <div class="bg-dark-surface border border-dark-border rounded-2xl w-full max-w-md p-6 space-y-4">
+      <div class="flex items-center justify-between pb-3 border-b border-dark-border">
+        <h3 class="font-bold text-white text-base">Agendar Atendimento</h3>
+        <button onclick="closeModal('modal-appointment')" class="text-slate-400 hover:text-white">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <form id="form-new-appointment" onsubmit="submitNewAppointment(event)" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-slate-400 font-medium mb-1">Paciente</label>
+          <select id="na-patient" required class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+            <!-- Injetado dinamicamente -->
+          </select>
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Data</label>
+            <input type="date" required id="na-date" value="2026-09-28" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+          <div>
+            <label class="block text-slate-400 font-medium mb-1">Horário</label>
+            <input type="time" required id="na-time" value="14:00" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+          </div>
+        </div>
+        <div>
+          <label class="block text-slate-400 font-medium mb-1">Tipo de Consulta</label>
+          <select id="na-type" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+            <option value="Primeira Consulta">Primeira Consulta (Metabólica)</option>
+            <option value="Retorno">Retorno de Tratamento</option>
+            <option value="Acompanhamento Hormonal">Acompanhamento Hormonal</option>
+            <option value="Aplicação Peptídeos">Aplicação de Peptídeos</option>
+            <option value="Bioimpedância">Bioimpedância & Composição</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-slate-400 font-medium mb-1">Observações Médicas</label>
+          <input type="text" id="na-notes" placeholder="Ex: Avaliação pós 30 dias de Tirzepatida" class="w-full bg-dark-card border border-dark-border rounded-lg p-2 text-white">
+        </div>
+        <div class="flex justify-end gap-2 pt-3 border-t border-dark-border">
+          <button type="button" onclick="closeModal('modal-appointment')" class="px-4 py-2 bg-dark-card border border-dark-border text-slate-300 rounded-lg">Cancelar</button>
+          <button type="submit" class="px-5 py-2 bg-brand-600 hover:bg-brand-500 text-white font-bold rounded-lg">Confirmar Agendamento</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- SCRIPT CLIENT PRINCIPAL -->
+  <script src="/app.js"></script>
+</body>
+</html>
